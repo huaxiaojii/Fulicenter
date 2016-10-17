@@ -1,4 +1,4 @@
-package bean;
+package ucai.cn.fulicter.bean;
 
 /**
  * Created by Winston on 2016/10/13.
