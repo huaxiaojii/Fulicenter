@@ -6,11 +6,27 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ucai.cn.fulicter.R;
 import ucai.cn.fulicter.utils.L;
 
-
 public class MainActivity extends AppCompatActivity {
+
+    @BindView(R.id.layout_new_good)
+    RadioButton mlayoutNewGood;
+    @BindView(R.id.layout_boutique)
+    RadioButton mlayoutBoutique;
+    @BindView(R.id.layout_category)
+    RadioButton mlayoutCategory;
+    @BindView(R.id.layout_cart)
+    RadioButton mlayoutCart;
+    @BindView(R.id.tvCartHint)
+    TextView mtvCartHint;
+    @BindView(R.id.layout_personal_center)
+    RadioButton mlayoutPersonalCenter;
 
     int index;
     RadioButton [] rbs;
