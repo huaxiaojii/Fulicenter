@@ -52,16 +52,52 @@ public class NewGoodsFragment extends Fragment {
         mAdapter=new GoodsAdapter(mlist,mcontext);
         initView();
         initData();
+        setlistener();
         return layout;
 
     }
-        public boolean isMore(){
 
-            return isMore;
+    private void setlistener() {
+        setPullUplistener();
+        setPullDownlistener();
+    }
+
+    private void setPullUplistener() {
+        mrv.setOnScrollChangeListener(new RecyclerView.OnScrollListener()){
+            @Override
+                    public void onScrollStateChanged(RecyclerView recycleView,int newState);
+                        super.onScrollStateChanged(recycleView,newState)
+                                int lastPosition=glm.findLastVisibleItemPosition();
+            if (newState==RecyclerView.SCROLL_STATE_DRAGGING
+                    &&lastPosition==mAdapter.getItemCount()-1
+                    &&mAdapter.isMore()){
+                pageId++;
+                downloadNewGoods(I.ACTION_PILL_UP);
+            }
         }
-    public void setMore(boolean more){
+        @Override
+                public void onScrolled(RecyclerView recycleView,int dx,int dy){
+                    super.onScrolled(recycle,dx,dy);
+            int  firstPostition=glm.findFirstVisibleItemPostion;
+            msrl.setEnabled(firstPostition=0);
+        }
 
-        isMore=more;
+    }
+
+    private void setPullDownlistener() {
+
+    }
+
+    private void downloadNewGoods() {
+        msrl.setOnRefreshListener(new SwipeRefreshLayout.OnChildScrollUpCallback(){
+            @Override
+            public void onRefresh(){
+                msrl.setRefreshing(true);
+                mtvRefresh.setVisibility(View.VISIBLE);
+                pageId=1;
+                downloadNewGoods();
+            }
+        });
     }
 
     private void initData() {
