@@ -85,7 +85,9 @@ public class NewGoodsFragment extends Fragment {
 
             @Override
             public void onError(String error) {
-
+                msrl.setRefreshing(false);
+                mtvRefresh.setVisibility(View.GONE);
+                Commonutils.showLongToast(error);
                 L.e("error"+error);
             }
         });
