@@ -23,6 +23,7 @@ import ucai.cn.fulicter.net.NetDao;
 import ucai.cn.fulicter.net.OkHttpUtils;
 import ucai.cn.fulicter.utils.Commonutils;
 import ucai.cn.fulicter.utils.L;
+import view.SpaceItemDecoration;
 
 
 /**
@@ -140,5 +141,6 @@ public class NewGoodsFragment extends Fragment {
         mrv.setLayoutManager(glm);
         mrv.setHasFixedSize(true);
         mrv.setAdapter(mAdapter);
+        mrv.addItemDecoration(new SpaceItemDecoration(12));
     }
 }
