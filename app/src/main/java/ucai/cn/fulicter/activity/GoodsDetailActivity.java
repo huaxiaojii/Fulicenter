@@ -3,6 +3,7 @@ package ucai.cn.fulicter.activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import butterknife.OnClick;
 import ucai.cn.fulicter.R;
 import ucai.cn.fulicter.bean.GoodsDetailsBean;
 import ucai.cn.fulicter.net.NetDao;
@@ -33,14 +34,21 @@ public class GoodsDetailActivity extends AppCompatActivity {
         NetDao.downloadGoodsDetail(mContext,goodsId, new OkHttpUtils.OnCompleteListener<GoodsDetailsBean>() {
             @Override
             public void onSuccess(GoodsDetailsBean result) {
-                L.i("details="+result);
-                if (result!=null){
+                L.i("details=" + result);
+                if (result != null) {
                     showGoodDetails(result);
-                }else {
+                } else {
                     finish();
                 }
 
             }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        }
+
 
             @Override
             public void onError(String error) {
@@ -52,6 +60,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
     }
 
     private void showGoodDetails(GoodsDetailsBean result) {
+
         mTvGoodNameEnglish.setText(detail.getGoodsEnglishNmae());
         mTvGoodName.setText(details.getGoodsName());
         mTvGooodPriceCurrnet.setText(details.getCurrencyPrice());
@@ -62,8 +71,10 @@ public class GoodsDetailActivity extends AppCompatActivity {
 
     }
 
-    private void setListener() {
-    }
+            }
+
+    private void setListener(){
+
+            }
 
 
-}
