@@ -1,5 +1,6 @@
 package ucai.cn.fulicter.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -14,10 +15,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.ucai.xm_fulicenter.I;
 import cn.ucai.xm_fulicenter.R;
 import cn.ucai.xm_fulicenter.bean.NewGoodsBean;
 import cn.ucai.xm_fulicenter.utils.ImageLoader;
+import ucai.cn.fulicter.utils.MFGT;
 
 /**
  * Created by yanglei on 2016/10/17.
@@ -25,11 +28,20 @@ import cn.ucai.xm_fulicenter.utils.ImageLoader;
 public class GoodsAdapter extends Adapter {
     List<NewGoodsBean> mList;
     Context mcontext;
+    boolean isMore;
 
     public GoodsAdapter(List<NewGoodsBean> list, Context context) {
         mList = list;
         mList = new ArrayList<>();
         mList.addAll(list);
+    }
+
+    public boolean isMore(){
+        return isMore;
+    }
+    public void setMore(boolean more){
+        isMore=more;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -46,7 +58,8 @@ public class GoodsAdapter extends Adapter {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (getItemViewType(position) == I.TYPE_FOOTER) {
-
+                FooterViewHolder vh= (FooterViewHolder) holder;
+            vh.mTvFooter.setText(getFootString());
         } else {
             GoodsViewHolder vh= (GoodsViewHolder) holder;
             NewGoodsBean goods = mList.get(position);
@@ -77,6 +90,11 @@ public class GoodsAdapter extends Adapter {
         notifyDataSetChanged();
     }
 
+    public int getFootString() {
+
+        return isMore?R.String.load_more.String;
+    }
+
 
     static class GoodsViewHolder extends ViewHolder{
         @BindView(R.id.ivGoodsThumd)
@@ -87,10 +105,17 @@ public class GoodsAdapter extends Adapter {
         TextView mtvGoodsPrice;
         @BindView(R.id.layout_goods)
         LinearLayout mlayoutGoods;
+        private Activity mContext;
 
         GoodsViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+        }
+        @OnClick(R.id.layout_goods)
+        public void onGoodsItemClick(){
+            int goodsId= (int) mlayoutGoods.getTag();
+            
+            MFGT.gotoGoodsDetailsActivity(mContext,goodsId);
         }
     }
 
