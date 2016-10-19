@@ -34,19 +34,25 @@ public class BoutiqueAdapter extends Adapter {
         mList = new ArrayList<>();
         mList.addAll(list);
     }
-
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolder holder = null;
-        if (viewType == I.TYPE_FOOTER) {
-            holder = new GoodsAdapter.FooterViewHolder(LayoutInflater.from(mContext)
-                    .inflate(R.layout.item_footer, parent, false));
-        } else {
-            holder = new BoutiqueViewHolder(LayoutInflater.from(mContext)
-                    .inflate(R.layout.item_boutique, parent, false));
-        }
+    public BoutiqueViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        BoutiqueViewHolder holder = new BoutiqueViewHolder(LayoutInflater.from(mContext)
+                .inflate(R.layout.item_boutique, parent, false));
         return holder;
     }
+
+//    @Override
+//    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        ViewHolder holder = null;
+//        if (viewType == I.TYPE_FOOTER) {
+//            holder = new GoodsAdapter.FooterViewHolder(LayoutInflater.from(mContext)
+//                    .inflate(R.layout.item_footer, parent, false));
+//        } else {
+//            holder = new BoutiqueViewHolder(LayoutInflater.from(mContext)
+//                    .inflate(R.layout.item_boutique, parent, false));
+//        }
+//        return holder;
+//    }
 
     public boolean isMore() {
         return isMore;
@@ -75,11 +81,13 @@ public class BoutiqueAdapter extends Adapter {
     }
 
     private int getFooterString() {
+
         return isMore?R.string.load_more:R.string.no_more;
     }
 
     @Override
     public int getItemCount() {
+
         return mList != null ? mList.size() + 1 : 1;
     }
 
