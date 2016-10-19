@@ -1,7 +1,6 @@
 package ucai.cn.fulicter.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -19,6 +18,7 @@ import ucai.cn.fulicter.I;
 import ucai.cn.fulicter.R;
 import ucai.cn.fulicter.bean.BoutiqueBean;
 import ucai.cn.fulicter.utils.ImageLoader;
+import ucai.cn.fulicter.view.FooterViewHolder;
 
 /**
  * Created by User on 2016/10/19.
@@ -59,8 +59,9 @@ public class BoutiqueAdapter extends Adapter {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if(holder instanceof GoodsAdapter.FooterViewHolder){
-            ((GoodsAdapter.FooterViewHolder) holder).mTvFooter.setText(getFooterString());
+        //            ((GoodsAdapter.FooterViewHolder) holder).mTvFooter.setText(getFooterString());
+        if(holder instanceof GoodsAdapter.FooterViewHolder) {
+            ((FooterViewHolder) holder).mTvFooter.setText(String.valueOf(getFooterString()));
         }
         if(holder instanceof BoutiqueViewHolder){
             BoutiqueBean boutiqueBean = mList.get(position);
