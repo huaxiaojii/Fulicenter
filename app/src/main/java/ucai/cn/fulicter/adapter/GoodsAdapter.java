@@ -1,6 +1,5 @@
 package ucai.cn.fulicter.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -10,37 +9,41 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.text.BreakIterator;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.ucai.xm_fulicenter.I;
-import cn.ucai.xm_fulicenter.R;
-import cn.ucai.xm_fulicenter.bean.NewGoodsBean;
-import cn.ucai.xm_fulicenter.utils.ImageLoader;
+
+import ucai.cn.fulicter.I;
+import ucai.cn.fulicter.R;
+import ucai.cn.fulicter.bean.NewGoodsBean;
+import ucai.cn.fulicter.utils.ImageLoader;
 import ucai.cn.fulicter.utils.MFGT;
 
-/**
- * Created by yanglei on 2016/10/17.
- */
+
 public class GoodsAdapter extends Adapter {
-    List<NewGoodsBean> mList;
-    Context mcontext;
+    Context mContext;
+    ArrayList<NewGoodsBean> mList;
     boolean isMore;
 
-    public GoodsAdapter(List<NewGoodsBean> list, Context context) {
-        mList = list;
-        mList = new ArrayList<>();
+
+    public GoodsAdapter(ArrayList<NewGoodsBean> list, Context context) {
+        mList=new ArrayList<>();
         mList.addAll(list);
+        mContext = context;
     }
 
-    public boolean isMore(){
+    public boolean isMore() {
+
         return isMore;
     }
-    public void setMore(boolean more){
-        isMore=more;
+
+    public void setMore(boolean more) {
+        isMore = more;
         notifyDataSetChanged();
     }
 
@@ -48,30 +51,36 @@ public class GoodsAdapter extends Adapter {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder holder = null;
         if (viewType == I.TYPE_FOOTER) {
-            holder = new FooterViewHolder(View.inflate(mcontext, R.layout.item_footer, null));
+           holder = new FooterViewHolder(View.inflate(mContext, R.layout.item_footer, null));
         } else {
-            holder = new GoodsViewHolder(View.inflate(mcontext, R.layout.item_goods, null));
+            holder = new GoodsViewHolder(View.inflate(mContext, R.layout.item_goods, null));
         }
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (getItemViewType(position) == I.TYPE_FOOTER) {
-                FooterViewHolder vh= (FooterViewHolder) holder;
-            vh.mTvFooter.setText(getFootString());
-        } else {
-            GoodsViewHolder vh= (GoodsViewHolder) holder;
-            NewGoodsBean goods = mList.get(position);
-            ImageLoader.downloadImg(mcontext, vh.mivGoodsThumd, goods.getGoodsThumb());
-            vh.mtvGoodsName.setText(goods.getGoodsName());
-            vh.mtvGoodsPrice.setText(goods.getCurrencyPrice());
+        if(getItemViewType(position)==I.TYPE_FOOTER){
+            FooterViewHolder mGoodsViewHolder= (FooterViewHolder) holder;
+            mGoodsViewHolder.tvFooter.setText(String.valueOf(getFootString()));
+        }else {
+            GoodsViewHolder mGoodsViewHolder= (GoodsViewHolder) holder;
+            NewGoodsBean mNewGoodsBean=mList.get(position);
+            ImageLoader.downloadImg(mContext,mGoodsViewHolder.ivGoodsThumb,mNewGoodsBean.getGoodsThumb());
+            mGoodsViewHolder.tvGoodsName.setText(mNewGoodsBean.getGoodsName());
+            mGoodsViewHolder.tvGoodsPrice.setText(mNewGoodsBean.getCurrencyPrice());
+            mGoodsViewHolder.layoutGoods.setTag(mNewGoodsBean.getGoodsId());
+
         }
+    }
+    public int getFootString() {
+
+        return isMore?R.string.load_more:R.string.no_more;
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mList != null ? mList.size() + 1 : 1;
     }
 
     @Override
@@ -83,29 +92,28 @@ public class GoodsAdapter extends Adapter {
     }
 
     public void initData(ArrayList<NewGoodsBean> list) {
-        if (mList != null) {
+        if(mList!=null){
             mList.clear();
         }
         mList.addAll(list);
         notifyDataSetChanged();
     }
 
-    public int getFootString() {
-
-        return isMore?R.String.load_more.String;
+    public void addData(ArrayList<NewGoodsBean> list) {
+        mList.addAll(list);
+        notifyDataSetChanged();
     }
 
-
-    static class GoodsViewHolder extends ViewHolder{
-        @BindView(R.id.ivGoodsThumd)
-        ImageView mivGoodsThumd;
+    class GoodsViewHolder extends ViewHolder{
+        @BindView(R.id.ivGoodsThumb)
+        ImageView ivGoodsThumb;
         @BindView(R.id.tvGoodsName)
-        TextView mtvGoodsName;
+        TextView tvGoodsName;
         @BindView(R.id.tvGoodsPrice)
-        TextView mtvGoodsPrice;
+        TextView tvGoodsPrice;
         @BindView(R.id.layout_goods)
-        LinearLayout mlayoutGoods;
-        private Activity mContext;
+        LinearLayout layoutGoods;
+
 
         GoodsViewHolder(View view) {
             super(view);
@@ -113,19 +121,25 @@ public class GoodsAdapter extends Adapter {
         }
         @OnClick(R.id.layout_goods)
         public void onGoodsItemClick(){
-            int goodsId= (int) mlayoutGoods.getTag();
-            
-            MFGT.gotoGoodsDetailsActivity(mContext,goodsId);
+            int goodsId=(int)layoutGoods.getTag();
+            MFGT.gotoGoodsDetailActivity(mContext,goodsId);
+
         }
     }
 
     static class FooterViewHolder extends ViewHolder{
         @BindView(R.id.tvFooter)
-        TextView tvFooter;
+        TextView mtvFooter;
+        public BreakIterator tvFooter;
 
-        FooterViewHolder(View view) {
+        FooterViewHolder(View view){
             super(view);
-            ButterKnife.bind(this, view);
+            ButterKnife.bind(this,view);
         }
     }
+
+
+
+
+
 }

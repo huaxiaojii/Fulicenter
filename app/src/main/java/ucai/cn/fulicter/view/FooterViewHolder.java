@@ -18,6 +18,7 @@ public class FooterViewHolder extends RecyclerView.ViewHolder{
     public TextView mtvFooter;
     public BreakIterator mTvFooter;
 
+
     public FooterViewHolder(View view){
         super(view);
         ButterKnife.bind(this,view);
