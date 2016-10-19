@@ -59,6 +59,7 @@ public class BotiqueFragment extends Fragment {
     }
 
     private void initData() {
+
         downloadBoutique(I.ACTION_DOWNLOAD);
     }
 

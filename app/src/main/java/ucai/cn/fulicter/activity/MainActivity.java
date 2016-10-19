@@ -1,79 +1,115 @@
 package ucai.cn.fulicter.activity;
 
-import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ucai.cn.fulicter.R;
+import ucai.cn.fulicter.fragment.BotiqueFragment;
+import ucai.cn.fulicter.fragment.NewGoodsFragment;
 import ucai.cn.fulicter.utils.L;
 
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.layout_new_good)
-    RadioButton mlayoutNewGood;
+    RadioButton mLayoutNewGood;
     @BindView(R.id.layout_boutique)
-    RadioButton mlayoutBoutique;
+    RadioButton mLayoutBoutique;
     @BindView(R.id.layout_category)
-    RadioButton mlayoutCategory;
+    RadioButton mLayoutCategory;
     @BindView(R.id.layout_cart)
-    RadioButton mlayoutCart;
+    RadioButton mLayoutCart;
     @BindView(R.id.tvCartHint)
-    TextView mtvCartHint;
+    TextView mTvCartHint;
     @BindView(R.id.layout_personal_center)
-    RadioButton mlayoutPersonalCenter;
+    RadioButton mLayoutPersonalCenter;
 
     int index;
-    RadioButton [] rbs;
+    int currentIndex;
+    RadioButton[] rbs;
+    Fragment[] mFragments;
+    Fragment mNewGoodsFragment;
+    Fragment mBoutiqueFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        L.i("MainActiviry onCreate");
+        L.i("MainActivity onCreate");
         initView();
+        initFragment();
+    }
+
+    private void initFragment() {
+        mFragments = new Fragment[5];
+        mNewGoodsFragment = new Fragment();
+        mBoutiqueFragment = new Fragment();
+        mFragments[0]=mNewGoodsFragment;
+        mFragments[1]=mBoutiqueFragment;
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container,mNewGoodsFragment)
+                .add(R.id.fragment_container,mBoutiqueFragment)
+                .hide(mBoutiqueFragment)
+                .show(mNewGoodsFragment)
+                .commit();
     }
 
     private void initView() {
         rbs = new RadioButton[5];
-        rbs[0]=mlayoutNewGood;
-        rbs[1]=mlayoutBoutique;
-        rbs[2]=mlayoutCategory;
-        rbs[3]=mlayoutCart;
-        rbs[4]=mlayoutPersonalCenter;
+        rbs[0] = mLayoutNewGood;
+        rbs[1] = mLayoutBoutique;
+        rbs[2] = mLayoutCategory;
+        rbs[3] = mLayoutCart;
+        rbs[4] = mLayoutPersonalCenter;
     }
-
 
     public void onCheckedChange(View v) {
-        switch (v.getId()) {
+        switch (v.getId()){
             case R.id.layout_new_good:
-                index=0;
+                index = 0;
                 break;
             case R.id.layout_boutique:
-                index=1;
+                index = 1;
                 break;
             case R.id.layout_category:
-                index=2;
+                index = 2;
                 break;
             case R.id.layout_cart:
-                index=3;
+                index = 3;
                 break;
             case R.id.layout_personal_center:
-                index=4;
+                index = 4;
                 break;
         }
-        setRadioButtonSataus();
+        setFragment();
     }
 
-    private void setRadioButtonSataus() {
-        for (int i=0;i<rbs.length;i++) {
-            if (i == index) {
+    private void setFragment() {
+        if(index!=currentIndex) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.hide(mFragments[currentIndex]);
+            if(!mFragments[index].isAdded()){
+                ft.add(R.id.fragment_container,mFragments[index]);
+            }
+            ft.show(mFragments[index]).commit();
+        }
+        setRadioButtonStatus();
+        currentIndex = index;
+    }
+
+    private void setRadioButtonStatus() {
+        L.e("index="+index);
+        for (int i=0;i<rbs.length;i++){
+            if(i==index){
                 rbs[i].setChecked(true);
             }else{
                 rbs[i].setChecked(false);
