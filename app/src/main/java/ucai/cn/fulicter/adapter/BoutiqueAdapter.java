@@ -25,6 +25,7 @@ import ucai.cn.fulicter.view.FooterViewHolder;
  */
 
 public class BoutiqueAdapter extends Adapter {
+
     Context mContext;
     ArrayList<BoutiqueBean> mList;
     boolean isMore;
