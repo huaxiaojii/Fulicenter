@@ -36,7 +36,7 @@ import ucai.cn.fulicter.view.SpaceItemDecoration;
 public class BotiqueFragment extends Fragment {
     @BindView(R.id.tv_refresh)
     TextView mTvRefresh;
-    @BindView(R.id.rv)
+    @BindView(R.id.rvNewGoods)
     RecyclerView mRv;
     @BindView(R.id.srl)
     SwipeRefreshLayout mSrl;

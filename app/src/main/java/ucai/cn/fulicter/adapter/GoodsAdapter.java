@@ -20,6 +20,8 @@ import butterknife.OnClick;
 
 import ucai.cn.fulicter.I;
 import ucai.cn.fulicter.R;
+import ucai.cn.fulicter.activity.BoutiqueChildActivity;
+import ucai.cn.fulicter.activity.MainActivity;
 import ucai.cn.fulicter.bean.NewGoodsBean;
 import ucai.cn.fulicter.utils.ImageLoader;
 import ucai.cn.fulicter.utils.MFGT;
@@ -31,7 +33,7 @@ public class GoodsAdapter extends Adapter {
     boolean isMore;
 
 
-    public GoodsAdapter(ArrayList<NewGoodsBean> list, Context context) {
+    public GoodsAdapter(BoutiqueChildActivity list, ArrayList<NewGoodsBean> context) {
         mList=new ArrayList<>();
         mList.addAll(list);
         mContext = context;

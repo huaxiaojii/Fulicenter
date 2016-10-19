@@ -1,37 +1,88 @@
 package ucai.cn.fulicter.activity;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
+import android.os.Bundle;
+import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ucai.cn.fulicter.I;
 import ucai.cn.fulicter.R;
+import ucai.cn.fulicter.bean.AlbumsBean;
 import ucai.cn.fulicter.bean.GoodsDetailsBean;
 import ucai.cn.fulicter.net.NetDao;
 import ucai.cn.fulicter.net.OkHttpUtils;
-import ucai.cn.fulicter.utils.Commonutils;
+import ucai.cn.fulicter.utils.CommonUtils;
 import ucai.cn.fulicter.utils.L;
+import ucai.cn.fulicter.utils.MFGT;
+import ucai.cn.fulicter.view.FlowIndicator;
+import ucai.cn.fulicter.view.SpaceItemDecoration;
 
-public class GoodsDetailActivity extends AppCompatActivity {
+public class GoodsDetailActivity extends BaseActivity {
+
+//public class GoodsDetailActivity extends AppCompatActivity {
     int goodsId;
     GoodsDetailActivity mContext;
+    @BindView(R.id.backClickArea)
+    LinearLayout backClickArea;
+    @BindView(R.id.tv_common_title)
+    TextView tvCommonTitle;
+    @BindView(R.id.iv_good_share)
+    ImageView ivGoodShare;
+    @BindView(R.id.iv_good_collect)
+    ImageView ivGoodCollect;
+    @BindView(R.id.iv_good_cart)
+    ImageView ivGoodCart;
+    @BindView(R.id.tv_cart_count)
+    TextView tvCartCount;
+    @BindView(R.id.layout_title)
+    RelativeLayout layoutTitle;
+    @BindView(R.id.tv_good_name_english)
+    TextView tvGoodNameEnglish;
+    @BindView(R.id.tv_good_name)
+    TextView tvGoodName;
+    @BindView(R.id.tv_good_price_shop)
+    TextView tvGoodPriceShop;
+    @BindView(R.id.tv_good_price_current)
+    TextView tvGoodPriceCurrent;
+    @BindView(R.id.salv)
+    SpaceItemDecoration msalv;
+    @BindView(R.id.indicator)
+    FlowIndicator mindicator;
+    @BindView(R.id.layout_image)
+    RelativeLayout layoutImage;
+    @BindView(R.id.wv_good_brief)
+    WebView wvGoodBrief;
+    @BindView(R.id.layout_banner)
+    RelativeLayout layoutBanner;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_goods_detail);
-        int goodsId=getIntent().getIntExtra(I.GoodsDetails.KEY_GOODS_ID,0);
-        L.e("details","goodsid"+goodsId);
-        if (goodsId==0){
+        setContentView(R.layout.activity_good_detail);
+        ButterKnife.bind(this);
+        goodsId = getIntent().getIntExtra(I.GoodsDetails.KEY_GOODS_ID, 0);
+        L.e("details", "goodsid=" + goodsId);
+        if (goodsId == 0) {
             finish();
         }
-        mContext=this;
+        mContext = this;
         initView();
         initData();
         setListener();
-
     }
 
-    private void initData() {
-        NetDao.downloadGoodsDetail(mContext,goodsId, new OkHttpUtils.OnCompleteListener<GoodsDetailsBean>() {
+    protected void setListener() {
+    }
+
+    protected void initData() {
+        NetDao.downloadGoodsDetail( mContext, goodsId, new OkHttpUtils.OnCompleteListener<GoodsDetailsBean>() {
             @Override
             public void onSuccess(GoodsDetailsBean result) {
                 L.i("details=" + result);
@@ -40,41 +91,57 @@ public class GoodsDetailActivity extends AppCompatActivity {
                 } else {
                     finish();
                 }
-
             }
-
-            @Override
-            public void onError(String error) {
-
-            }
-        }
-
 
             @Override
             public void onError(String error) {
                 finish();
-                L.e("details,error="+error);
-                Commonutils.showShortToast(error);
+                L.e("details,error=" + error);
+                CommonUtils.showLongToast(error);
             }
         });
     }
 
-    private void showGoodDetails(GoodsDetailsBean result) {
-
-        mTvGoodNameEnglish.setText(detail.getGoodsEnglishNmae());
-        mTvGoodName.setText(details.getGoodsName());
-        mTvGooodPriceCurrnet.setText(details.getCurrencyPrice());
-        mTvGoodPriceShop.setText(details.getShopPrice());
+    private void showGoodDetails(GoodsDetailsBean details) {
+        tvGoodNameEnglish.setText(details.getGoodsEnglishName());
+        tvGoodName.setText(details.getGoodsName());
+        tvGoodPriceCurrent.setText(details.getCurrencyPrice());
+        tvGoodPriceShop.setText(details.getShopPrice());
+        msalv.startPlayLoop(mindicator, getAlbumImgUrl(details), getAlbumImgCount(details));
+        wvGoodBrief.loadDataWithBaseURL(null, details.getGoodsBrief(), I.TEXT_HTML, I.UTF_8, null);
     }
 
-    private void initView() {
-
+    private int getAlbumImgCount(GoodsDetailsBean details) {
+        if (details.getProperties()!= null && details.getProperties().length > 0) {
+            return details.getProperties()[0].getAlbums().length;
+        }
+        return 0;
     }
 
+    private String[] getAlbumImgUrl(GoodsDetailsBean details) {
+        String[] urls = new String[]{};
+        if (details.getPromotePrice() != null && details.getProperties().length > 0) {
+            AlbumsBean[] albums = details.getProperties()[0].getAlbums();
+            urls = new String[albums.length];
+            for (int i = 0; i < albums.length; i++) {
+                urls[i] = albums[i].getImgUrl();
             }
+        }
+        return urls;
+    }
 
-    private void setListener(){
+    protected void initView() {
+    }
 
-            }
+    @OnClick(R.id.backClickArea)
+    public void onBackClick() {
 
+        MFGT.finish(this);
+    }
+
+//    public void onback(View v) {
+//
+//        MFGT.finish(this);
+//    }
+}
 
