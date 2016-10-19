@@ -11,11 +11,10 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ucai.cn.fulicter.R;
-import ucai.cn.fulicter.fragment.BotiqueFragment;
-import ucai.cn.fulicter.fragment.NewGoodsFragment;
 import ucai.cn.fulicter.utils.L;
 
-public class MainActivity extends AppCompatActivity {
+//public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.layout_new_good)
     RadioButton mLayoutNewGood;
@@ -63,13 +62,24 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void initView() {
+    protected void initView() {
         rbs = new RadioButton[5];
         rbs[0] = mLayoutNewGood;
         rbs[1] = mLayoutBoutique;
         rbs[2] = mLayoutCategory;
         rbs[3] = mLayoutCart;
         rbs[4] = mLayoutPersonalCenter;
+    }
+
+    @Override
+    protected void initData() {
+        initFragment();
+
+    }
+
+    @Override
+    protected void setListener() {
+
     }
 
     public void onCheckedChange(View v) {
@@ -115,5 +125,9 @@ public class MainActivity extends AppCompatActivity {
                 rbs[i].setChecked(false);
             }
         }
+
+    }
+    public void onBackPressed(){
+        finish();
     }
 }
