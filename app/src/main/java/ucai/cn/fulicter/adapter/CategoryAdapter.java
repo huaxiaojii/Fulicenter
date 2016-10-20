@@ -129,6 +129,11 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             view.getTag();
             holder= (GroupViewHolder) view.getTag();
         }
+        final CategoryChildBean child=getChild(groupPosition,childPosition);
+        if (child!=null){
+            ImageLoader.downloadImg(mContext,holder.ivGroupThumb,child.getImageUrl())
+
+        }
         CategoryGroupBean group =getGroup(groupPosition);
         if (group!=null){
             ImageLoader.downloadImg(mContext,holder.ivGroupThumb,group.getImageUrl());
@@ -143,7 +148,18 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
-     class GroupViewHolder {
+    public void initData(ArrayList<CategoryGroupBean> mGroupList,
+                         ArrayList<ArrayList<CategoryChildBean>> mChildList) {
+        if (mGroupList!=null){
+            mGroupList.clear();
+        }
+        mGroupList.addAll(mGroupList);
+        if (mChildList!=null){
+            notifyDataSetChanged();
+        }
+    }
+
+    class GroupViewHolder {
         @BindView(R.id.iv_group_thumb)
         ImageView ivGroupThumb;
         @BindView(R.id.tv_group_name)
