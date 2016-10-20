@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,17 +26,26 @@ import ucai.cn.fulicter.bean.NewGoodsBean;
 import ucai.cn.fulicter.utils.ImageLoader;
 import ucai.cn.fulicter.utils.MFGT;
 
+import static android.R.attr.left;
+import static ucai.cn.fulicter.R.mipmap.right;
+
 
 public class GoodsAdapter extends Adapter {
     Context mContext;
     ArrayList<NewGoodsBean> mList;
     boolean isMore;
+    int sortBy=I.SORT_BY_ADDTIME_DESC;
 
 
     public GoodsAdapter(BoutiqueChildActivity list, ArrayList<NewGoodsBean> context) {
         mList=new ArrayList<>();
-        mList.addAll(list);
-        mContext = context;
+        mList.addAll(mList);
+        mContext=context;
+
+    }
+
+    public GoodsAdapter(MainActivity mContext, ArrayList<NewGoodsBean> mList) {
+
     }
 
     public boolean isMore() {
@@ -137,6 +146,33 @@ public class GoodsAdapter extends Adapter {
         FooterViewHolder(View view){
             super(view);
             ButterKnife.bind(this,view);
+        }
+    }
+
+    private int sortBy(){
+        Collection.sort(mList,new Comparator<NewGoodsBean>()){
+            @Override
+                    public int compare(NewGoodsBean left,NewGoodsBean right){
+                int result=0;
+                switch (sortBy){
+                            case I.SORT_BY_ADDTIME_ASC:
+                                result=(int)(Long.valueOF(left.getAddTime())-Long.valueOf())
+                                break;
+                            case I.SORT_BY_ADDTIME_DESC:
+                                result=(int)(Long.valueOF(left.getAddTime())-Long.valueOf())
+
+                                break;
+                            case I.SORT_BY_PRICE_ASC:
+                                result=(int)(Long.valueOF(left.getAddTime())-Long.valueOf())
+
+                                break;
+                            case I.SORT_BY_PRICE_DESC:
+                                result=(int)(Long.valueOF(left.getAddTime())-Long.valueOf())
+
+                                break;
+                        }
+                return result;
+            }
         }
     }
 
