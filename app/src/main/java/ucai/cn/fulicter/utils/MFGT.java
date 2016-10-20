@@ -27,6 +27,7 @@ import ucai.cn.fulicter.activity.SplashActivity;
             intent.setClass(context,cls);
 //            context.startActivity(intent);
             context.startActivity(intent);
+            context.startActivity(intent);
             context.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
         }
     public static void gotoGoodsDetailsActivity(Activity context,int goodsId){

@@ -172,6 +172,7 @@ public class GoodsAdapter extends Adapter {
                                 break;
                         }
                 return result;
+
             }
         }
     }

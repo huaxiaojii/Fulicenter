@@ -34,6 +34,7 @@ public class CategoryChildActivity extends BaseActivity {
         ButterKnife.bind(this);
         mList=new ArrayList<>();
         mAdapter=new GoodsAdapter(mContext,mList);
+        mContext= new CategoryChildActivity();
     }
 
     @Override
