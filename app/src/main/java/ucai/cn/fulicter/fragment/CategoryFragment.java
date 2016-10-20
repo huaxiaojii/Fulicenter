@@ -74,8 +74,12 @@ public class CategoryFragment extends BaseFragment {
                     ArrayList<CategoryGroupBean> grouppList = ConvertUtils.array2List(result);
                     L.e("groupList="+grouppList.size());
                     mGroupList.addAll(grouppList);
-                    for (CategoryGroupBean g:grouppList){
-                        downloadChild(g.getId());
+                   for (int i=0;i<grouppList.size();i++){
+                       mChildList.add(new ArrayList<CategoryChildBean>());
+                       CategoryGroupBean g=grouppList.get(i);
+                       downloadChild(g.getId());
+//                    for (CategoryGroupBean g:grouppList){
+//                        downloadChild(g.getId());
                     }
                 }
             }
@@ -97,7 +101,8 @@ public class CategoryFragment extends BaseFragment {
                 if (result!= null && result.length>0){
                     ArrayList<CategoryChildBean> childList =ConvertUtils.array2List(result);
                     L.e("childList="+childList.size());
-                    mChildList.addAll(childList);
+                    int index = 0;
+                    mChildList.addAll(index,childList);
                 }
                 if (groupCount==mGroupList.size()){
                     mAdapter.initData(mGroupList,mChildList);
