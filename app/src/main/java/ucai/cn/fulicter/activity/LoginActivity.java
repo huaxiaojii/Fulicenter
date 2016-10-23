@@ -7,6 +7,7 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ucai.cn.fulicter.utils.MFGT;
 
 /**
  * Created by User on 2016/10/23.
@@ -46,6 +47,7 @@ public class LoginActivity extends BaseActivity {
             case R.id.btn_login:
                 break;
             case R.id.btn_register:
+                MFGT.gotoRegister(this);
                 break;
         }
     }
