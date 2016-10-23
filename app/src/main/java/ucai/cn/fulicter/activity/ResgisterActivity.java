@@ -1,6 +1,7 @@
 package ucai.cn.fulicter.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ucai.cn.fulicter.I;
 import ucai.cn.fulicter.bean.Result;
 import ucai.cn.fulicter.net.NetDao;
 import ucai.cn.fulicter.net.OkHttpUtils;
@@ -112,6 +114,7 @@ public class ResgisterActivity extends BaseActivity{
                 }else{
                     if(result.isRetMsg()){
                         CommonUtils.showLongToast(R.string.register_success);
+                        setResult(RESULT_OK,new Intent().putExtra(I.User.USER_NAME,username));
                         MFGT.finish(mContext);
                     }else{
                         CommonUtils.showLongToast(R.string.register_fail_exists);
