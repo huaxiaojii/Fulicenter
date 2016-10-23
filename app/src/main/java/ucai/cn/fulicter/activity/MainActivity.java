@@ -2,7 +2,7 @@ package ucai.cn.fulicter.activity;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
@@ -10,8 +10,14 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import ucai.cn.fulicter.FuLiCenterApplication;
 import ucai.cn.fulicter.R;
+import ucai.cn.fulicter.fragment.BotiqueFragment;
+import ucai.cn.fulicter.fragment.CategoryFragment;
+import ucai.cn.fulicter.fragment.NewGoodsFragment;
 import ucai.cn.fulicter.utils.L;
+import ucai.cn.fulicter.utils.MFGT;
 
 //public class MainActivity extends AppCompatActivity {
 public class MainActivity extends BaseActivity {
@@ -33,35 +39,38 @@ public class MainActivity extends BaseActivity {
     int currentIndex;
     RadioButton[] rbs;
     Fragment[] mFragments;
-    Fragment mNewGoodsFragment;
-    Fragment mBoutiqueFragment;
-
+    NewGoodsFragment mNewGoodsFragment;
+    BotiqueFragment mBoutiqueFragment;
+    CategoryFragment mCategoryFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         L.i("MainActivity onCreate");
-        initView();
-        initFragment();
+        super.onCreate(savedInstanceState);
     }
 
     private void initFragment() {
         mFragments = new Fragment[5];
-        mNewGoodsFragment = new Fragment();
-        mBoutiqueFragment = new Fragment();
-        mFragments[0]=mNewGoodsFragment;
-        mFragments[1]=mBoutiqueFragment;
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_container,mNewGoodsFragment)
-                .add(R.id.fragment_container,mBoutiqueFragment)
-                .hide(mBoutiqueFragment)
-                .show(mNewGoodsFragment)
-                .commit();
+        mNewGoodsFragment = new NewGoodsFragment();
+        mBoutiqueFragment = new BotiqueFragment();
+        mCategoryFragment = new CategoryFragment();
+//        mFragments[0] = mNewGoodsFragment;
+//        mFragments[1] = mBoutiqueFragment;
+//        mFragments[2] = mCategoryFragment;
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .add(R.id.fragment_container,mNewGoodsFragment)
+//                .add(R.id.fragment_container,mBoutiqueFragment)
+//                .add(R.id.fragment_container,mCategoryFragment)
+//                .hide(mBoutiqueFragment)
+//                .hide(mCategoryFragment)
+//                .show(mNewGoodsFragment)
+//                .commit();
     }
 
+    @Override
     protected void initView() {
         rbs = new RadioButton[5];
         rbs[0] = mLayoutNewGood;
@@ -74,7 +83,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initData() {
         initFragment();
-
     }
 
     @Override
@@ -97,7 +105,11 @@ public class MainActivity extends BaseActivity {
                 index = 3;
                 break;
             case R.id.layout_personal_center:
-                index = 4;
+                if(FuLiCenterApplication.getUsername()==null){
+                    MFGT.gotoLogin(this);
+                }else {
+                    index = 4;
+                }
                 break;
         }
         setFragment();
@@ -125,7 +137,6 @@ public class MainActivity extends BaseActivity {
                 rbs[i].setChecked(false);
             }
         }
-
     }
     public void onBackPressed(){
         finish();

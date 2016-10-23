@@ -4,55 +4,69 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import java.util.ArrayList;
+
 import ucai.cn.fulicter.I;
+
 import ucai.cn.fulicter.R;
+import ucai.cn.fulicter.activity.BoutiqueChildActivity;
+import ucai.cn.fulicter.activity.CategoryChildActivity;
 import ucai.cn.fulicter.activity.GoodsDetailActivity;
+import ucai.cn.fulicter.activity.LoginActivity;
 import ucai.cn.fulicter.activity.MainActivity;
-import ucai.cn.fulicter.activity.SplashActivity;
+import ucai.cn.fulicter.bean.BoutiqueBean;
+import ucai.cn.fulicter.bean.CategoryChildBean;
 
 
 /**
  * Created by Winston on 2016/10/14.
  */
-    public class MFGT {
-        public static void finish(Activity activity){
-            activity.finish();
-            activity.overridePendingTransition(R.anim.push_right_in,R.anim.push_right_out);
-        }
-        public static void gotoMainActivity(SplashActivity context){
-            startActivity(context, MainActivity.class);
-        }
-        public static void startActivity(Activity context,Class<?> cls){
-            Intent intent = new Intent();
-            intent.setClass(context,cls);
-//            context.startActivity(intent);
-            context.startActivity(intent);
-            context.startActivity(intent);
-            context.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
-        }
-    public static void gotoGoodsDetailsActivity(Activity context,int goodsId){
-        Intent intent=new Intent();
-        intent.setClass(context,GoodsDetailActivity.class);
+public class MFGT {
+    public static void finish(Activity activity){
+        activity.finish();
+        activity.overridePendingTransition(R.anim.push_right_in,R.anim.push_right_out);
+    }
+    public static void gotoMainActivity(Activity context){
+        startActivity(context, MainActivity.class);
+    }
+    public static void startActivity(Activity context,Class<?> cls){
+        Intent intent = new Intent();
+        intent.setClass(context,cls);
+        startActivity(context,intent);
+    }
+
+    public static void gotoGoodsDetailsActivity(Context context, int goodsId){
+        Intent intent = new Intent();
+        intent.setClass(context, GoodsDetailActivity.class);
         intent.putExtra(I.GoodsDetails.KEY_GOODS_ID,goodsId);
-        context.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        startActivity(context,intent);
     }
-    public static void startActivity(Activity context,Intent intent){
+
+    public static void startActivity(Context context,Intent intent){
         context.startActivity(intent);
-        context.overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-
+        ((Activity)context).overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
 
-    public static void gotoGoodsDetailActivity(Context mContext, int goodsId) {
-
+    public static void gotoBoutiqueChildActivity(Context context, BoutiqueBean bean){
+        Intent intent = new Intent();
+        intent.setClass(context, BoutiqueChildActivity.class);
+        intent.putExtra(I.Boutique.CAT_ID,bean);
+        startActivity(context,intent);
     }
 
-    public static void gotoCategoryChildAvtivity(Context context, int catId){
-        Intent intent=new Intent();
-        intent, intent.setClass();
+
+    public static void gotoCategoryChildActivity(Context context, int catId, String groupName, ArrayList<CategoryChildBean> list){
+        Intent intent = new Intent();
+        intent.setClass(context, CategoryChildActivity.class);
         intent.putExtra(I.CategoryChild.CAT_ID,catId);
-        startActivity((Activity) context,intent);
+        intent.putExtra(I.CategoryGroup.NAME,groupName);
+        intent.putExtra(I.CategoryChild.ID,list);
+        startActivity(context,intent);
     }
-        Intent intent=new Intent();
-}
 
+    public static void gotoLogin(Activity context){
+        startActivity(context, LoginActivity.class);
+    }
+
+}
