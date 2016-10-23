@@ -3,7 +3,6 @@ package ucai.cn.fulicter.net;
 import android.content.Context;
 
 import ucai.cn.fulicter.I;
-import ucai.cn.fulicter.activity.GoodsDetailActivity;
 import ucai.cn.fulicter.bean.BoutiqueBean;
 import ucai.cn.fulicter.bean.CategoryChildBean;
 import ucai.cn.fulicter.bean.CategoryGroupBean;
@@ -76,4 +75,12 @@ public class NetDao {
                 .post()
                 .execute(listener);
     }
+    public static void login(Context context, String username, String password, OkHttpUtils.OnCompleteListener<Result> listener){
+                OkHttpUtils<Result> utils = new OkHttpUtils<>(context);
+                utils.setRequestUrl(I.REQUEST_LOGIN)
+                                .addParam(I.User.USER_NAME,username)
+                                .addParam(I.User.PASSWORD,MD5.getMessageDigest(password))
+                                .targetClass(Result.class)
+                                .execute(listener);
+            }
 }
