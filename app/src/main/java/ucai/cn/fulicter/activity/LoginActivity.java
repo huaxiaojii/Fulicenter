@@ -10,13 +10,18 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.ucai.fulicenter.R;
+import ucai.cn.fulicter.FuLiCenterApplication;
 import ucai.cn.fulicter.I;
 import ucai.cn.fulicter.bean.Result;
+import ucai.cn.fulicter.bean.User;
+import ucai.cn.fulicter.dao.UserDao;
 import ucai.cn.fulicter.net.NetDao;
 import ucai.cn.fulicter.net.OkHttpUtils;
 import ucai.cn.fulicter.utils.CommonUtils;
 import ucai.cn.fulicter.utils.L;
 import ucai.cn.fulicter.utils.MFGT;
+import ucai.cn.fulicter.utils.ResultUtils;
 
 /**
  * Created by User on 2016/10/23.
@@ -89,29 +94,66 @@ public class LoginActivity extends BaseActivity {
                 pd.setMessage(getResources().getString(R.string.logining));
                 pd.show();
                 L.e(TAG,"username="+username+",password="+password);
-                NetDao.login(mContext, username, password, new OkHttpUtils.OnCompleteListener<Result>() {
-                        @Override
-                        public void onSuccess(Result result) {
-                                pd.dismiss();
-                               L.e(TAG,"result="+result);
-                                if(result==null){
-                                        CommonUtils.showLongToast(R.string.login_fail);
+//                NetDao.login(mContext, username, password, new OkHttpUtils.OnCompleteListener<Result>() {
+                  NetDao.login(mContext, username, password, new OkHttpUtils.OnCompleteListener<String>() {
+
+                    @Override
+                    public void onSuccess(String s) {
+                        Result result = ResultUtils.getResultFromJson(s,User.class);
+                        L.e(TAG,"result="+result);
+                        if(result==null){
+                            CommonUtils.showLongToast(R.string.login_fail);
+                        }else{
+                            if(result.isRetMsg()){
+                                User user = (User) result.getRetData();
+                                L.e(TAG,"user="+user);
+                                UserDao dao = new UserDao(mContext);
+                                boolean isSuccess = dao.saveUser(user);
+                                    if(isSuccess){
+                                        SharePrefrenceUtils.getInstence(mContext).saveUser(user.getMuserName());
+                                            FuLiCenterApplication.setUser(user);
+                                            MFGT.finish(mContext);
                                     }else{
-                                        if(result.isRetMsg()){
-                                                I.User user = (I.User) result.getRetData();
-                                                L.e(TAG,"user="+user);
-                                                MFGT.finish(mContext);
-                                            }else{
-                                                if(result.getRetCode()==I.MSG_LOGIN_UNKNOW_USER){
-                                                        CommonUtils.showLongToast(R.string.login_fail_unknow_user);
-                                                    }else if(result.getRetCode()==I.MSG_LOGIN_ERROR_PASSWORD){
-                                                        CommonUtils.showLongToast(R.string.login_fail_error_password);
-                                                    }else{
-                                                        CommonUtils.showLongToast(R.string.login_fail);
-                                                    }
-                                           }
+                                            CommonUtils.showLongToast(R.string.user_database_error);
                                     }
+
+                                MFGT.finish(mContext);
+                            }else{
+                                if(result.getRetCode()==I.MSG_LOGIN_UNKNOW_USER){
+                                    CommonUtils.showLongToast(R.string.login_fail_unknow_user);
+                                }else if(result.getRetCode()==I.MSG_LOGIN_ERROR_PASSWORD){
+                                    CommonUtils.showLongToast(R.string.login_fail_error_password);
+                                }else{
+                                    CommonUtils.showLongToast(R.string.login_fail);
+                                }
                             }
+                        }
+                        pd.dismiss();
+                    }
+
+
+//                        @Override
+//                        public void onSuccess(Result result) {
+//                                pd.dismiss();
+//                               L.e(TAG,"result="+result);
+//                                if(result==null){
+//                                        CommonUtils.showLongToast(R.string.login_fail);
+//                                    }else{
+//                                        if(result.isRetMsg()){
+//                                                I.User user = (I.User) result.getRetData();
+//                                                L.e(TAG,"user="+user);
+//                                                MFGT.finish(mContext);
+//                                            }else{
+//                                                if(result.getRetCode()==I.MSG_LOGIN_UNKNOW_USER){
+//                                                        CommonUtils.showLongToast(R.string.login_fail_unknow_user);
+//                                                    }else if(result.getRetCode()==I.MSG_LOGIN_ERROR_PASSWORD){
+//                                                        CommonUtils.showLongToast(R.string.login_fail_error_password);
+//                                                    }else{
+//                                                        CommonUtils.showLongToast(R.string.login_fail);
+//                                                    }
+//                                           }
+//                                    }
+//                            }
 
                                 @Override
                         public void onError(String error) {
