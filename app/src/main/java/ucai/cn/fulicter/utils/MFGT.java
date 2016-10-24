@@ -6,9 +6,8 @@ import android.content.Intent;
 
 import java.util.ArrayList;
 
+import cn.ucai.fulicenter.R;
 import ucai.cn.fulicter.I;
-
-import ucai.cn.fulicter.R;
 import ucai.cn.fulicter.activity.BoutiqueChildActivity;
 import ucai.cn.fulicter.activity.CategoryChildActivity;
 import ucai.cn.fulicter.activity.GoodsDetailActivity;
@@ -67,7 +66,9 @@ public class MFGT {
     }
 
     public static void gotoLogin(Activity context){
-
+        Intent intent = new Intent();
+        intent.setClass(context,LoginActivity.class);
+        startActivityForResult(context,intent,I.REQUEST_CODE_LOGIN);
         startActivity(context, LoginActivity.class);
     }
     public static void gotoRegister(Activity context){

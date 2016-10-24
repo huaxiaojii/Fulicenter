@@ -45,6 +45,7 @@ public class PersonalCenterFragment extends BaseFragment {
     @Override
     protected void initView() {
 
+
     }
 
     @Override

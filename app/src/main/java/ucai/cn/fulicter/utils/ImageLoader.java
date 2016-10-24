@@ -20,6 +20,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import ucai.cn.fulicter.I;
+import ucai.cn.fulicter.activity.MainActivity;
+import ucai.cn.fulicter.bean.User;
 
 /**
  * Created by yao on 2016/5/18.
@@ -42,6 +44,24 @@ public class ImageLoader {
     private int mDefaultPicId;
     /**ListView、RecyclerView是否在拖拽中，true：拖拽中*/
     boolean mIsDragging;
+
+    public static String getAvatarUrl(User user){
+        if(user!=null) {
+            String url = I.DOWNLOAD_AVATAR_URL + I.NAME_OR_HXID + "=" + user.getMuserName()
+                    + I.AND + I.AVATAR_TYPE + "=" + user.getMavatarPath() + I.AND + I.AVATAR_SUFFIX
+                    + "=" + user.getMavatarSuffix() + I.AND + "width=200&height=200";
+            L.e("useravatar=" + url);
+            return url;
+        }
+        return null;
+    }
+    public static void setAvatar(String url,Context context,ImageView imageView){
+        ImageLoader.build(url)
+                .defaultPicture(R.drawable.contactlogo)
+                .imageView(imageView)
+                .showImage(context);
+    }
+
     public interface OnImageLoadListener {
         void onSuccess(String url, Bitmap bitmap);
 
