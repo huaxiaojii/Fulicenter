@@ -81,6 +81,10 @@ public class MFGT {
         context.startActivityForResult(intent,requestCode);
         context.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
     }
+
+    public static void gotoSettings(MainActivity context) {
+        startActivity(context, ResgisterActivity.class);
+    }
 }
 
 
