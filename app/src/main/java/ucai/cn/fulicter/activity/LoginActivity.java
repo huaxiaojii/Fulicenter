@@ -22,6 +22,7 @@ import ucai.cn.fulicter.utils.CommonUtils;
 import ucai.cn.fulicter.utils.L;
 import ucai.cn.fulicter.utils.MFGT;
 import ucai.cn.fulicter.utils.ResultUtils;
+import ucai.cn.fulicter.view.DisplayUtils;
 
 /**
  * Created by User on 2016/10/23.
@@ -48,7 +49,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-
+        DisplayUtils.initBackWithTitle(mContext,getResources().getString(R.string.login));
     }
 
     @Override

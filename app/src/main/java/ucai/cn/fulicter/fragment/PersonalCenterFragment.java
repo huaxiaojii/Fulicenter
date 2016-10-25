@@ -62,6 +62,7 @@ public class PersonalCenterFragment extends BaseFragment {
 //        User user = FuLiCenterApplication.getUser();
         user = FuLiCenterApplication.getUser();
         L.e(TAG, "user=" + user);
+
         if (user == null){
             MFGT.gotoLogin(mContext);
         } else {
