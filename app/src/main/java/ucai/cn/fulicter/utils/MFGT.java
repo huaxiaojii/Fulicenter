@@ -14,6 +14,7 @@ import ucai.cn.fulicter.activity.GoodsDetailActivity;
 import ucai.cn.fulicter.activity.LoginActivity;
 import ucai.cn.fulicter.activity.MainActivity;
 import ucai.cn.fulicter.activity.ResgisterActivity;
+import ucai.cn.fulicter.activity.UpdateNickActivity;
 import ucai.cn.fulicter.bean.BoutiqueBean;
 import ucai.cn.fulicter.bean.CategoryChildBean;
 
@@ -84,6 +85,9 @@ public class MFGT {
 
     public static void gotoSettings(MainActivity context) {
         startActivity(context, ResgisterActivity.class);
+    }
+    public static void gotoUpdateNick(Activity context){
+        startActivityForResult(context,new Intent(context, UpdateNickActivity.class),I.REQUEST_CODE_NICK);
     }
 }
 
