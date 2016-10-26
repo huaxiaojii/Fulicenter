@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.File;
 
 import ucai.cn.fulicter.I;
+import ucai.cn.fulicter.activity.GoodsDetailActivity;
 import ucai.cn.fulicter.activity.MainActivity;
 import ucai.cn.fulicter.bean.BoutiqueBean;
 import ucai.cn.fulicter.bean.CategoryChildBean;
@@ -147,6 +148,15 @@ public class NetDao {
     public static void deleteCollect(Context context, String username, int goodsId, OkHttpUtils.OnCompleteListener<MessageBean> listener) {
         OkHttpUtils<MessageBean> utils =new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_DELETE_COLLECT)
+                .addParam(I.Collect.USER_NAME,username)
+                .addParam(I.Collect.GOODS_ID,String.valueOf(goodsId))
+                .targetClass(MessageBean.class)
+                .execute(listener);
+    }
+
+    public static void isColected(GoodsDetailActivity context, String username, int goodsId, OkHttpUtils.OnCompleteListener<MessageBean> listener) {
+        OkHttpUtils<MessageBean> utils =new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_IS_COLLECT)
                 .addParam(I.Collect.USER_NAME,username)
                 .addParam(I.Collect.GOODS_ID,String.valueOf(goodsId))
                 .targetClass(MessageBean.class)
