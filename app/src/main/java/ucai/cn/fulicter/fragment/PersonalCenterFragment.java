@@ -19,10 +19,15 @@ import butterknife.OnClick;
 import cn.ucai.fulicenter.R;
 import ucai.cn.fulicter.FuLiCenterApplication;
 import ucai.cn.fulicter.activity.MainActivity;
+import ucai.cn.fulicter.bean.Result;
 import ucai.cn.fulicter.bean.User;
+import ucai.cn.fulicter.dao.UserDao;
+import ucai.cn.fulicter.net.NetDao;
+import ucai.cn.fulicter.net.OkHttpUtils;
 import ucai.cn.fulicter.utils.ImageLoader;
 import ucai.cn.fulicter.utils.L;
 import ucai.cn.fulicter.utils.MFGT;
+import ucai.cn.fulicter.utils.ResultUtils;
 
 /**
  * Created by User on 2016/10/24.
@@ -80,11 +85,43 @@ public class PersonalCenterFragment extends BaseFragment {
         super.onResume();
         user = FuLiCenterApplication.getUser();
         L.e(TAG,"user="+user);
+
         if (user!=null){
             ImageLoader.setAvatar(ImageLoader.getAvatarUrl(user),mContext,mIvUserAvatar);
             mTvUserName.setText(user.getMuserNick());
+            syncUserInfo();
         }
     }
+
+    private void syncUserInfo() {
+        NetDao.syncUserInfo(mContext,user.getMuserName(), new OkHttpUtils.OnCompleteListener<String>(){
+            @Override
+            public void onSuccess(String s) {
+                Result result = ResultUtils.getResultFromJson(s, User.class);
+                if(result!=null){
+                    User u = (User) result.getRetData();
+                    if(!user.equals(u)){
+                        UserDao dao = new UserDao(mContext);
+                        boolean b = dao.saveUser(u);
+                        if(b){
+                            FuLiCenterApplication.setUser(u);
+                            user = u;
+                            ImageLoader.setAvatar(ImageLoader.getAvatarUrl(user), mContext, mIvUserAvatar);
+                            mTvUserName.setText(user.getMuserNick());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
+    }
+
+
+
     private void initOrderList() {
         ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
         HashMap<String, Object> order1 = new HashMap<String, Object>();

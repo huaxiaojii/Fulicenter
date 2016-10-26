@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.File;
 
 import ucai.cn.fulicter.I;
+import ucai.cn.fulicter.activity.MainActivity;
 import ucai.cn.fulicter.bean.BoutiqueBean;
 import ucai.cn.fulicter.bean.CategoryChildBean;
 import ucai.cn.fulicter.bean.CategoryGroupBean;
@@ -112,4 +113,13 @@ public class NetDao {
                                 .post()
                                 .execute(listener);
 }
-}
+
+
+    public static void syncUserInfo(MainActivity context, String username, OkHttpUtils.OnCompleteListener<String> listener) {
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+                utils.setRequestUrl(I.REQUEST_FIND_USER)
+                                .addParam(I.User.USER_NAME,username)
+                                .targetClass(String.class)
+                                .execute(listener);
+            }
+    }
