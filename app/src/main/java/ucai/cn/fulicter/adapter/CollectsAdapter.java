@@ -60,6 +60,11 @@ public class CollectsAdapter extends Adapter {
         notifyDataSetChanged();
     }
 
+    public void remove(CollectBean bean) {
+        mList.remove(bean);
+        notifyDataSetChanged();
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder holder = null;
@@ -115,6 +120,7 @@ public class CollectsAdapter extends Adapter {
         mList.addAll(list);
         notifyDataSetChanged();
     }
+
 
     class ColelctsViewHolder extends ViewHolder{
         @BindView(R.id.ivGoodsThumb)
