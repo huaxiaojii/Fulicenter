@@ -143,6 +143,11 @@ public class CollectsActivity extends BaseActivity {
             }
         });
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+    }
 
     @Override
     protected void initData() {
