@@ -19,6 +19,7 @@ import butterknife.OnClick;
 import cn.ucai.fulicenter.R;
 import ucai.cn.fulicter.FuLiCenterApplication;
 import ucai.cn.fulicter.activity.MainActivity;
+import ucai.cn.fulicter.bean.MessageBean;
 import ucai.cn.fulicter.bean.Result;
 import ucai.cn.fulicter.bean.User;
 import ucai.cn.fulicter.dao.UserDao;
@@ -44,6 +45,8 @@ public class PersonalCenterFragment extends BaseFragment {
     @BindView(R.id.center_user_order_lis)
     GridView mCenterUserOrderLis;
     User user = null;
+    @BindView(R.id.tv_collect_count)
+    TextView mTvCollectCount;
 
     @Nullable
     @Override
@@ -90,8 +93,30 @@ public class PersonalCenterFragment extends BaseFragment {
             ImageLoader.setAvatar(ImageLoader.getAvatarUrl(user),mContext,mIvUserAvatar);
             mTvUserName.setText(user.getMuserNick());
             syncUserInfo();
+            syncCollectsCount();
         }
     }
+
+    private void syncCollectsCount() {
+        NetDao.getCollectsCount(mContext, user.getMuserName(), new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                        @Override
+                        public void onSuccess(MessageBean result) {
+                                if (result != null && result.isSuccess()) {
+                                        mTvCollectCount.setText(result.getMsg());
+                                    }else{
+                                        mTvCollectCount.setText(String.valueOf(0));
+                                    }
+                            }
+
+                                @Override
+                        public void onError(String error) {
+                                mTvCollectCount.setText(String.valueOf(0));
+                                L.e(TAG,"error="+error);
+                            }
+                    });
+            }
+
+
 
     private void syncUserInfo() {
         NetDao.syncUserInfo(mContext,user.getMuserName(), new OkHttpUtils.OnCompleteListener<String>(){
@@ -119,6 +144,10 @@ public class PersonalCenterFragment extends BaseFragment {
             }
         });
     }
+    @OnClick(R.id.layout_center_collect)
+    public void gotoCollectsList(){
+        MFGT.gotoCollects(mContext);
+    }
 
 
 
@@ -144,7 +173,7 @@ public class PersonalCenterFragment extends BaseFragment {
                 mCenterUserOrderLis.setAdapter(adapter);
             }
 
-    @OnClick({R.id.tv_center_settings,R.id.center_user_info})
+    @OnClick({ R.id.tv_center_settings,R.id.center_user_info})
     public void gotoSettings(){
         MFGT.gotoSettings(mContext);
     }

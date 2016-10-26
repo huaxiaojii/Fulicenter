@@ -9,7 +9,9 @@ import ucai.cn.fulicter.activity.MainActivity;
 import ucai.cn.fulicter.bean.BoutiqueBean;
 import ucai.cn.fulicter.bean.CategoryChildBean;
 import ucai.cn.fulicter.bean.CategoryGroupBean;
+import ucai.cn.fulicter.bean.CollectBean;
 import ucai.cn.fulicter.bean.GoodsDetailsBean;
+import ucai.cn.fulicter.bean.MessageBean;
 import ucai.cn.fulicter.bean.NewGoodsBean;
 import ucai.cn.fulicter.bean.Result;
 import ucai.cn.fulicter.utils.MD5;
@@ -98,28 +100,47 @@ public class NetDao {
     public static void updateNick(Context context, String username, String nick, OkHttpUtils.OnCompleteListener<String> listener){
                 OkHttpUtils<String> utils = new OkHttpUtils<>(context);
                 utils.setRequestUrl(I.REQUEST_UPDATE_USER_NICK)
-                                .addParam(I.User.USER_NAME,username)
-                                .addParam(I.User.NICK,nick)
-                                .targetClass(String.class)
-                                .execute(listener);
+                        .addParam(I.User.USER_NAME,username)
+                        .addParam(I.User.NICK,nick)
+                        .targetClass(String.class)
+                        .execute(listener);
     }
     public static void updateAvatar(Context context, String username, File file, OkHttpUtils.OnCompleteListener<String> listener){
                 OkHttpUtils<String> utils = new OkHttpUtils<>(context);
                 utils.setRequestUrl(I.REQUEST_UPDATE_AVATAR)
-                                .addParam(I.NAME_OR_HXID,username)
-                                .addParam(I.AVATAR_TYPE,I.AVATAR_TYPE_USER_PATH)
-                                .addFile2(file)
-                                .targetClass(String.class)
-                                .post()
-                                .execute(listener);
+                        .addParam(I.NAME_OR_HXID,username)
+                        .addParam(I.AVATAR_TYPE,I.AVATAR_TYPE_USER_PATH)
+                        .addFile2(file)
+                        .targetClass(String.class)
+                        .post()
+                        .execute(listener);
 }
 
 
     public static void syncUserInfo(MainActivity context, String username, OkHttpUtils.OnCompleteListener<String> listener) {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
-                utils.setRequestUrl(I.REQUEST_FIND_USER)
-                                .addParam(I.User.USER_NAME,username)
-                                .targetClass(String.class)
-                                .execute(listener);
+        utils.setRequestUrl(I.REQUEST_FIND_USER)
+                .addParam(I.User.USER_NAME,username)
+                .targetClass(String.class)
+                .execute(listener);
             }
+
+    public static void getCollectsCount(MainActivity context, String username, OkHttpUtils.OnCompleteListener<MessageBean> listener) {
+        OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_FIND_COLLECT_COUNT)
+                .addParam(I.Collect.USER_NAME,username)
+                .targetClass(MessageBean.class)
+                .execute(listener);
+
     }
+
+    public static void downloadCollects(Context context, String username, int pageId, OkHttpUtils.OnCompleteListener<CollectBean[]> listener){
+        OkHttpUtils<CollectBean[]> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_FIND_COLLECTS)
+                .addParam(I.Collect.USER_NAME,username)
+                .addParam(I.PAGE_ID,String.valueOf(pageId))
+                .addParam(I.PAGE_SIZE,String.valueOf(I.PAGE_SIZE_DEFAULT))
+                .targetClass(CollectBean[].class)
+                .execute(listener);
+            }
+}
