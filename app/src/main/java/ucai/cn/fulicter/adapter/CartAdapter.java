@@ -15,15 +15,20 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.ucai.fulicenter.R;
 import ucai.cn.fulicter.I;
 import ucai.cn.fulicter.bean.CartBean;
 import ucai.cn.fulicter.bean.GoodsDetailsBean;
+import ucai.cn.fulicter.bean.MessageBean;
+import ucai.cn.fulicter.net.NetDao;
+import ucai.cn.fulicter.net.OkHttpUtils;
 import ucai.cn.fulicter.utils.ImageLoader;
 
 /**
  * Created by User on 2016/10/27.
  */
+
 
 public class CartAdapter extends Adapter<CartAdapter.CartViewHolder> {
     Context mContext;
@@ -51,7 +56,7 @@ public class CartAdapter extends Adapter<CartAdapter.CartViewHolder> {
             holder.mTvCartPrice.setText(goods.getCurrencyPrice());
         }
         holder.mTvCartCount.setText("("+cartBean.getCount()+")");
-        holder.mCbCartSelected.setChecked(false);
+        holder.mCbCartSelected.setChecked(cartBean.isChecked());
         holder.mCbCartSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -59,6 +64,7 @@ public class CartAdapter extends Adapter<CartAdapter.CartViewHolder> {
                 mContext.sendBroadcast(new Intent(I.BROADCAST_UPDATA_CART));
             }
         });
+        holder.mIvCartAdd.setTag(position);
     }
 
     @Override
@@ -91,6 +97,65 @@ public class CartAdapter extends Adapter<CartAdapter.CartViewHolder> {
             super(view);
             ButterKnife.bind(this, view);
         }
+
+        @OnClick(R.id.iv_cart_add)
+        public void addCart(){
+            final int position = (int) mIvCartAdd.getTag();
+            CartBean cart = mList.get(position);
+            NetDao.updateCart(mContext, cart.getId(), cart.getCount() + 1, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                @Override
+                public void onSuccess(MessageBean result) {
+                    if(result!=null && result.isSuccess()){
+                        mList.get(position).setCount(mList.get(position).getCount()+1);
+                        mContext.sendBroadcast(new Intent(I.BROADCAST_UPDATA_CART));
+                        mTvCartCount.setText("("+(mList.get(position).getCount())+")");
+                    }
+                }
+
+                @Override
+                public void onError(String error) {
+
+                }
+            });
+        }
+
+        @OnClick(R.id.iv_cart_del)
+        public void delCart(){
+            final int position = (int) mIvCartAdd.getTag();
+            CartBean cart = mList.get(position);
+            if(cart.getCount()>1) {
+                NetDao.updateCart(mContext, cart.getId(), cart.getCount() - 1, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                    @Override
+                    public void onSuccess(MessageBean result) {
+                        if (result != null && result.isSuccess()) {
+                            mList.get(position).setCount(mList.get(position).getCount() - 1);
+                            mContext.sendBroadcast(new Intent(I.BROADCAST_UPDATA_CART));
+                            mTvCartCount.setText("(" + (mList.get(position).getCount()) + ")");
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+            }else{
+                NetDao.deleteCart(mContext, cart.getId(), new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                    @Override
+                    public void onSuccess(MessageBean result) {
+                        if(result!=null && result.isSuccess()){
+                            mList.remove(position);
+                            mContext.sendBroadcast(new Intent(I.BROADCAST_UPDATA_CART));
+                            notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+            }
+        }
     }
-}
 }
