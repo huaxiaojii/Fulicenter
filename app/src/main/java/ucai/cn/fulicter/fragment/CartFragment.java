@@ -1,5 +1,9 @@
 package ucai.cn.fulicter.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,6 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.fulicenter.R;
 import ucai.cn.fulicter.FuLiCenterApplication;
+import ucai.cn.fulicter.I;
 import ucai.cn.fulicter.activity.MainActivity;
 import ucai.cn.fulicter.adapter.CartAdapter;
 import ucai.cn.fulicter.bean.CartBean;
@@ -54,6 +59,8 @@ public class CartFragment extends BaseFragment {
     @BindView(R.id.tv_nothing)
     TextView mTvNothing;
 
+    updateCartReceiver mReceiver;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,6 +76,9 @@ public class CartFragment extends BaseFragment {
     @Override
     protected void setListener() {
         setPullDownListener();
+        IntentFilter filter = new IntentFilter(I.BROADCAST_UPDATA_CART);
+        mReceiver = new updateCartReceiver();
+        mContext.registerReceiver(mReceiver,filter);
     }
 
     private void setPullDownListener() {
@@ -98,8 +108,9 @@ public class CartFragment extends BaseFragment {
                     mSrl.setRefreshing(false);
                     mTvRefresh.setVisibility(View.GONE);
                     if (list != null && list.size() > 0) {
-                        L.e(TAG, "list[0]=" + list.get(0));
-                        mAdapter.initData(list);
+                        mList.clear();
+                        mList.addAll(list);
+                        mAdapter.initData(mList);
                         setCartLayout(true);
                     }else{
                         setCartLayout(false);
@@ -155,7 +166,7 @@ public class CartFragment extends BaseFragment {
                     rankPrice += getPrice(c.getGoods().getRankPrice())*c.getCount();
                 }
             }
-            mTvCartSumPrice.setText("合计:￥"+Double.valueOf(sumPrice));
+            mTvCartSumPrice.setText("合计:￥"+Double.valueOf(rankPrice));
             mTvCartSavePrice.setText("节省:￥"+Double.valueOf(sumPrice-rankPrice));
 
         }else{
@@ -166,5 +177,21 @@ public class CartFragment extends BaseFragment {
     private int getPrice(String price){
         price = price.substring(price.indexOf("￥")+1);
         return Integer.valueOf(price);
+    }
+    class updateCartReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            L.e(TAG,"updateCartReceiver...");
+            sumPrice();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mReceiver!=null){
+            mContext.unregisterReceiver(mReceiver);
+        }
     }
 }
