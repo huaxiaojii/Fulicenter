@@ -23,8 +23,8 @@ import ucai.cn.fulicter.bean.User;
 import ucai.cn.fulicter.net.NetDao;
 import ucai.cn.fulicter.net.OkHttpUtils;
 import ucai.cn.fulicter.utils.CommonUtils;
-import ucai.cn.fulicter.utils.ConvertUtils;
 import ucai.cn.fulicter.utils.L;
+import ucai.cn.fulicter.utils.ResultUtils;
 import ucai.cn.fulicter.view.SpaceItemDecoration;
 
 /**
@@ -80,15 +80,31 @@ public class CartFragment extends BaseFragment {
     private void downloadCart() {
         User user = FuLiCenterApplication.getUser();
         if(user!=null){
-            NetDao.downloadCart(mContext, user.getMuserName(), new OkHttpUtils.OnCompleteListener<CartBean[]>() {
+//            NetDao.downloadCart(mContext, user.getMuserName(), new OkHttpUtils.OnCompleteListener<CartBean[]>() {
+//                @Override
+//                public void onSuccess(CartBean[] result) {
+//                    L.e(TAG,"result="+result);
+//                    mSrl.setRefreshing(false);
+//                    mTvRefresh.setVisibility(View.GONE);
+//                    if(result!=null && result.length>0){
+//                        ArrayList<CartBean> list = ConvertUtils.array2List(result);
+//                        mAdapter.initData(list);
+//                    }
+//                }
+
+            NetDao.downloadCart(mContext, user.getMuserName(), new OkHttpUtils.OnCompleteListener<String>() {
+
+
+
+
                 @Override
-                public void onSuccess(CartBean[] result) {
-                    L.e(TAG,"result="+result);
+                public void onSuccess(String result) {
+                    ArrayList<CartBean> list = ResultUtils.getCartFromJson(s);
+                    L.e(TAG,"result="+list);
                     mSrl.setRefreshing(false);
                     mTvRefresh.setVisibility(View.GONE);
-                    if(result!=null && result.length>0){
-                        ArrayList<CartBean> list = ConvertUtils.array2List(result);
-                        mAdapter.initData(list);
+                    if(list!=null && list.size()>0){
+                        L.e(TAG,"list[0]="+list.get(0));
                     }
                 }
 

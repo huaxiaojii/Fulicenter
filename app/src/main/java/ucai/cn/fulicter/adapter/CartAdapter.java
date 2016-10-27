@@ -15,6 +15,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.fulicenter.R;
 import ucai.cn.fulicter.bean.CartBean;
+import ucai.cn.fulicter.bean.GoodsDetailsBean;
+import ucai.cn.fulicter.utils.ImageLoader;
 
 /**
  * Created by User on 2016/10/27.
@@ -45,6 +47,14 @@ public void onBindViewHolder(CartViewHolder holder, int position) {
 //        holder.mTvBoutiqueName.setText(boutiqueBean.getName());
 //        holder.mTvBoutiqueDescription.setText(boutiqueBean.getDescription());
 //        holder.mLayoutBoutiqueItem.setTag(boutiqueBean);
+    GoodsDetailsBean goods = cartBean.getGoods();
+    if(goods!=null) {
+        ImageLoader.downloadImg(mContext, holder.mIvCartThumb, goods.getGoodsThumb());
+        holder.mTvCartGoodName.setText(goods.getGoodsName());
+        holder.mTvCartPrice.setText(goods.getCurrencyPrice());
+    }
+    holder.mTvCartCount.setText("("+cartBean.getCount()+")");
+    holder.mCbCartSelected.setChecked(false);
         }
 
 @Override
