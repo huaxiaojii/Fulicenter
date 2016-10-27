@@ -16,6 +16,7 @@ import ucai.cn.fulicter.activity.LoginActivity;
 import ucai.cn.fulicter.activity.MainActivity;
 import ucai.cn.fulicter.activity.ResgisterActivity;
 import ucai.cn.fulicter.activity.UpdateNickActivity;
+import ucai.cn.fulicter.activity.UserProfileActivity;
 import ucai.cn.fulicter.bean.BoutiqueBean;
 import ucai.cn.fulicter.bean.CategoryChildBean;
 
@@ -46,7 +47,7 @@ public class MFGT {
 
     public static void startActivity(Context context,Intent intent){
         context.startActivity(intent);
-        ((Activity)context).overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        ((Activity)context).overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
     }
 
 
@@ -71,31 +72,39 @@ public class MFGT {
         Intent intent = new Intent();
         intent.setClass(context,LoginActivity.class);
         startActivityForResult(context,intent,I.REQUEST_CODE_LOGIN);
-        startActivity(context, LoginActivity.class);
     }
+
+    public static void gotoLoginFromCart(Activity context){
+        Intent intent = new Intent();
+        intent.setClass(context,LoginActivity.class);
+        startActivityForResult(context,intent,I.REQUEST_CODE_LOGIN_FROM_CART);
+    }
+
     public static void gotoRegister(Activity context){
-        Intent intent= new Intent();
+        Intent intent = new Intent();
         intent.setClass(context,ResgisterActivity.class);
         startActivityForResult(context,intent,I.REQUEST_CODE_REGISTER);
-        startActivity(context, ResgisterActivity.class);
     }
+
+
     public static void startActivityForResult(Activity context,Intent intent,int requestCode){
         context.startActivityForResult(intent,requestCode);
         context.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
     }
 
-    public static void gotoSettings(MainActivity context) {
-        startActivity(context, ResgisterActivity.class);
+    public static void gotoSettings(Activity context){
+        startActivity(context, UserProfileActivity.class);
     }
+
     public static void gotoUpdateNick(Activity context){
         startActivityForResult(context,new Intent(context, UpdateNickActivity.class),I.REQUEST_CODE_NICK);
     }
 
-    public static void gotoCollects(MainActivity context) {
+    public static void gotoCollects(Activity context){
         startActivity(context, CollectsActivity.class);
     }
-}
 
+}
 
 
 
