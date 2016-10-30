@@ -3,6 +3,7 @@ package ucai.cn.fulicter.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +25,7 @@ import ucai.cn.fulicter.bean.MessageBean;
 import ucai.cn.fulicter.net.NetDao;
 import ucai.cn.fulicter.net.OkHttpUtils;
 import ucai.cn.fulicter.utils.ImageLoader;
-
-/**
- * Created by User on 2016/10/27.
- */
-
+import ucai.cn.fulicter.utils.MFGT;
 
 public class CartAdapter extends Adapter<CartAdapter.CartViewHolder> {
     Context mContext;
@@ -96,6 +93,13 @@ public class CartAdapter extends Adapter<CartAdapter.CartViewHolder> {
         CartViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+        }
+
+        @OnClick({R.id.iv_cart_thumb,R.id.tv_cart_good_name,R.id.tv_cart_price})
+        public void gotoDetail(){
+            final int position = (int) mIvCartAdd.getTag();
+            CartBean cart = mList.get(position);
+            MFGT.gotoGoodsDetailsActivity(mContext,cart.getGoodsId());
         }
 
         @OnClick(R.id.iv_cart_add)
