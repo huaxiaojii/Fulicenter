@@ -31,12 +31,13 @@ import ucai.cn.fulicter.net.NetDao;
 import ucai.cn.fulicter.net.OkHttpUtils;
 import ucai.cn.fulicter.utils.CommonUtils;
 import ucai.cn.fulicter.utils.L;
+import ucai.cn.fulicter.utils.MFGT;
 import ucai.cn.fulicter.utils.ResultUtils;
 import ucai.cn.fulicter.view.SpaceItemDecoration;
 
-/**
- * Created by User on 2016/10/27.
- */
+
+
+
 
 public class CartFragment extends BaseFragment {
     private static final String TAG = CartFragment.class.getSimpleName();
@@ -60,6 +61,7 @@ public class CartFragment extends BaseFragment {
     TextView mTvNothing;
 
     updateCartReceiver mReceiver;
+    String cartIds="";
 
     @Nullable
     @Override
@@ -153,15 +155,22 @@ public class CartFragment extends BaseFragment {
     }
 
     @OnClick(R.id.tv_cart_buy)
-    public void onClick() {
+    public void buy() {
+        if(cartIds!=null && !cartIds.equals("") && cartIds.length()>0){
+            MFGT.gotoBuy(mContext,cartIds);
+        }else{
+            CommonUtils.showLongToast(R.string.order_nothing);
+        }
     }
 
     private void sumPrice(){
+        cartIds = "";
         int sumPrice = 0;
         int rankPrice = 0;
         if(mList!=null && mList.size()>0){
             for (CartBean c:mList){
                 if(c.isChecked()){
+                    cartIds += c.getId()+",";
                     sumPrice += getPrice(c.getGoods().getCurrencyPrice())*c.getCount();
                     rankPrice += getPrice(c.getGoods().getRankPrice())*c.getCount();
                 }
@@ -170,7 +179,7 @@ public class CartFragment extends BaseFragment {
             mTvCartSavePrice.setText("节省:￥"+Double.valueOf(sumPrice-rankPrice));
 
         }else{
-//            setCartLayout(false);
+            cartIds = "";
             mTvCartSumPrice.setText("合计:￥0");
             mTvCartSavePrice.setText("节省:￥0");
         }
@@ -196,6 +205,7 @@ public class CartFragment extends BaseFragment {
             mContext.unregisterReceiver(mReceiver);
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
