@@ -170,7 +170,7 @@ public class CartFragment extends BaseFragment {
             mTvCartSavePrice.setText("节省:￥"+Double.valueOf(sumPrice-rankPrice));
 
         }else{
-            setCartLayout(false);
+//            setCartLayout(false);
             mTvCartSumPrice.setText("合计:￥0");
             mTvCartSavePrice.setText("节省:￥0");
         }
