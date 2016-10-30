@@ -1,12 +1,11 @@
 package ucai.cn.fulicter.activity;
 
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -29,23 +28,8 @@ import ucai.cn.fulicter.view.SlideAutoLoopView;
 
 public class GoodsDetailActivity extends BaseActivity {
 
-    //public class GoodsDetailActivity extends AppCompatActivity {
-    int goodsId;
-    GoodsDetailActivity mContext;
     @BindView(R.id.backClickArea)
     LinearLayout backClickArea;
-    @BindView(R.id.tv_common_title)
-    TextView tvCommonTitle;
-    @BindView(R.id.iv_good_share)
-    ImageView ivGoodShare;
-    @BindView(R.id.iv_good_collect)
-    ImageView ivGoodCollect;
-    @BindView(R.id.iv_good_cart)
-    ImageView ivGoodCart;
-    @BindView(R.id.tv_cart_count)
-    TextView tvCartCount;
-    @BindView(R.id.layout_title)
-    RelativeLayout layoutTitle;
     @BindView(R.id.tv_good_name_english)
     TextView tvGoodNameEnglish;
     @BindView(R.id.tv_good_name)
@@ -54,91 +38,103 @@ public class GoodsDetailActivity extends BaseActivity {
     TextView tvGoodPriceShop;
     @BindView(R.id.tv_good_price_current)
     TextView tvGoodPriceCurrent;
+    @BindView(R.id.salv)
+    SlideAutoLoopView salv;
     @BindView(R.id.indicator)
-    FlowIndicator mindicator;
-    @BindView(R.id.layout_image)
-    RelativeLayout layoutImage;
+    FlowIndicator indicator;
     @BindView(R.id.wv_good_brief)
     WebView wvGoodBrief;
-    @BindView(R.id.layout_banner)
-    RelativeLayout layoutBanner;
-    @BindView(R.id.salv)
-    SlideAutoLoopView msalv;
+    int goodsId;
+    GoodsDetailActivity mContext;
+
+
     boolean isCollected = false;
     @BindView(R.id.iv_good_collect)
-    ImageView mIvGoodCollect;
-
+    ImageView ivGoodCollect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_good_detail);
+        setContentView(R.layout.activity_goods_detail);
         ButterKnife.bind(this);
         goodsId = getIntent().getIntExtra(I.GoodsDetails.KEY_GOODS_ID, 0);
-        L.e("details", "goodsid=" + goodsId);
+        L.e("details", "goodsid" + goodsId);
         if (goodsId == 0) {
             finish();
         }
         mContext = this;
-        initView();
-        initData();
-        setListener();
+        super.onCreate(savedInstanceState);
+
     }
 
+    @Override
     protected void setListener() {
     }
 
+    @Override
     protected void initData() {
-        NetDao.downloadGoodsDetail(mContext, goodsId, new OkHttpUtils.OnCompleteListener<GoodsDetailsBean>() {
-            @Override
-            public void onSuccess(GoodsDetailsBean result) {
-                L.i("details=" + result);
-                if (result != null) {
-                    showGoodDetails(result);
-                } else {
-                    finish();
-                }
-            }
+        NetDao.downloadGoodsDetall(mContext,
+                goodsId, new OkHttpUtils.OnCompleteListener<GoodsDetailsBean>() {
+                    @Override
+                    public void onSuccess(GoodsDetailsBean result) {
+                        L.i("details=" + result);
+                        if (result != null) {
+                            showGoodsDetails(result);
 
-            @Override
-            public void onError(String error) {
-                finish();
-                L.e("details,error=" + error);
-                CommonUtils.showLongToast(error);
-            }
-        });
+                        } else {
+                            finish();
+                        }
+                    }
+
+
+                    @Override
+                    public void onError(String error) {
+                        finish();
+                        L.e("details,error=" + error);
+                        CommonUtils.showShortToast(error);
+
+                    }
+                });
+
     }
 
-    private void showGoodDetails(GoodsDetailsBean details) {
-        tvGoodNameEnglish.setText(details.getGoodsEnglishName());
-        tvGoodName.setText(details.getGoodsName());
-        tvGoodPriceCurrent.setText(details.getCurrencyPrice());
-        tvGoodPriceShop.setText(details.getShopPrice());
-        msalv.startPlayLoop(mindicator, getAlbumImgUrl(details), getAlbumImgCount(details));
-        wvGoodBrief.loadDataWithBaseURL(null, details.getGoodsBrief(), I.TEXT_HTML, I.UTF_8, null);
+    private void showGoodsDetails(GoodsDetailsBean detalis) {
+        tvGoodNameEnglish.setText(detalis.getGoodsEnglishName());
+        tvGoodName.setText(detalis.getGoodsName());
+        tvGoodPriceCurrent.setText(detalis.getCurrencyPrice());
+        tvGoodPriceShop.setText(detalis.getShopPrice());
+        salv.startPlayLoop(indicator, getAlbumImgUrl(detalis), getAlbmImgConut(detalis));
+        wvGoodBrief.loadDataWithBaseURL(null, detalis.getGoodsBrief(), I.TEXT_HTML, I.UTF_8, null);
+
     }
 
-    private int getAlbumImgCount(GoodsDetailsBean details) {
-        if (details.getProperties().length>0 && details.getProperties()!=null ) {
+    private int getAlbmImgConut(GoodsDetailsBean details) {
+        if (details.getPromotePrice() != null && details.getPromotePrice().length() > 0) {
             return details.getProperties()[0].getAlbums().length;
-
         }
         return 0;
+
     }
 
     private String[] getAlbumImgUrl(GoodsDetailsBean details) {
         String[] urls = new String[]{};
-        if (details.getPromotePrice() != null && details.getProperties().length> 0) {
+        if (details.getPromotePrice() != null && details.getProperties().length > 0) {
             AlbumsBean[] albums = details.getProperties()[0].getAlbums();
             urls = new String[albums.length];
             for (int i = 0; i < albums.length; i++) {
                 urls[i] = albums[i].getImgUrl();
             }
+
         }
         return urls;
     }
 
+    @Override
     protected void initView() {
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        isCollected();
     }
 
     @OnClick(R.id.backClickArea)
@@ -146,84 +142,114 @@ public class GoodsDetailActivity extends BaseActivity {
 
         MFGT.finish(this);
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        isCollected();
+
+    public void onback(View v) {
+        MFGT.finish(this);}
+
+
+    @OnClick(R.id.iv_good_collect)
+    public void onCollectClick(){
+        User user= FuLiCenterApplication.getUser();
+        if (user==null){
+            MFGT.gotoLogin(mContext);
+        }else {
+            if (isCollected){
+                NetDao.deleteCollect(mContext, user.getMuserName(), goodsId, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                    @Override
+                    public void onSuccess(MessageBean result) {
+                        if (result!=null&&result.isSuccess()){
+                            isCollected=!isCollected;
+                            updateGoodsCollectStatus();
+                            CommonUtils.showLongToast(result.getMsg());
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+            }else {
+                NetDao.addCollect(mContext, user.getMuserName(), goodsId, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                    @Override
+                    public void onSuccess(MessageBean result) {
+                        if (result!=null&&result.isSuccess()){
+                            isCollected=!isCollected;
+                            updateGoodsCollectStatus();
+                            CommonUtils.showLongToast(result.getMsg());
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+            }
+        }
+
     }
-    private void isCollected() {
+
+
+    public void isCollected() {
         User user = FuLiCenterApplication.getUser();
         if (user != null) {
-            NetDao.isColected(mContext, user.getMuserName(), goodsId, new OkHttpUtils.OnCompleteListener<MessageBean>() {
-                @Override
-                public void onSuccess(MessageBean result) {
-                    if (result != null && result.isSuccess()) {
-                        isCollected = true;
-                    }else{
-                        isCollected = false;
-                    }
-                    updateGoodsCollectStatus();
-                }
+            NetDao.isColected(mContext, user.getMuserName(), goodsId, new
+                    OkHttpUtils.OnCompleteListener<MessageBean>() {
+                        @Override
+                        public void onSuccess(MessageBean result) {
+                            if (result != null && result.isSuccess()) {
+                                isCollected = true;
 
-                @Override
-                public void onError(String error) {
-                    isCollected = false;
-                    updateGoodsCollectStatus();
-                }
-            });
+
+                            }else {
+                                isCollected=false;
+                            }
+                            updateGoodsCollectStatus();
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            isCollected=false;
+                            updateGoodsCollectStatus();
+                        }
+                    });
+            updateGoodsCollectStatus();
         }
-        updateGoodsCollectStatus();
     }
 
     private void updateGoodsCollectStatus() {
         if (isCollected) {
-            mIvGoodCollect.setImageResource(R.mipmap.bg_collect_out);
+            ivGoodCollect.setImageResource(R.mipmap.bg_collect_out);
         } else {
-            mIvGoodCollect.setImageResource(R.mipmap.bg_collect_in);
+            ivGoodCollect.setImageResource(R.mipmap.bg_collect_in);
         }
     }
-    @OnClick(R.id.iv_good_collect)
-    public void onCollectClick(){
+    @OnClick(R.id.iv_good_cart)
+    public void addCart(){
         User user = FuLiCenterApplication.getUser();
-        if(user==null){
-            MFGT.gotoLogin(mContext);
+        if(user!=null){
+            NetDao.addCart(mContext, user.getMuserName(), goodsId, new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                @Override
+                public void onSuccess(MessageBean result) {
+                    if(result!=null && result.isSuccess()){
+                        CommonUtils.showLongToast(R.string.add_goods_success);
+                    }else {
+                        CommonUtils.showLongToast(R.string.add_goods_fail);
+                    }
+                }
+                @Override
+                public void onError(String error) {
+                    CommonUtils.showLongToast(R.string.add_goods_fail);
+                    L.e("error="+error);
+                }
+            });
         }else{
-            if(isCollected){
-                NetDao.deleteCollect(mContext, user.getMuserName(), goodsId, new OkHttpUtils.OnCompleteListener<MessageBean>() {
-                    @Override
-                    public void onSuccess(MessageBean result) {
-                        if(result!=null && result.isSuccess()){
-                            isCollected = !isCollected;
-                            updateGoodsCollectStatus();
-                            CommonUtils.showLongToast(result.getMsg());
-                        }
-                    }
-                    @Override
-                    public void onError(String error) {
-                    }
-                });
-            }else{
-                NetDao.addCollect(mContext, user.getMuserName(), goodsId, new OkHttpUtils.OnCompleteListener<MessageBean>() {
-                    @Override
-                    public void onSuccess(MessageBean result) {
-                        if(result!=null && result.isSuccess()){
-                            isCollected = !isCollected;
-                            updateGoodsCollectStatus();
-                            CommonUtils.showLongToast(result.getMsg());
-                            mContext.sendStickyBroadcast(new Intent("update_collect").putExtra(I.Collect.GOODS_ID,goodsId));
-                        }
-                    }
-                    @Override
-                    public void onError(String error) {
-                    }
-                });
-            }
+            MFGT.gotoLogin(mContext);
         }
-            }
+    }
 
-//    public void onback(View v) {
-//
-//        MFGT.finish(this);
-//    }
+
 }
-

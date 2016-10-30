@@ -30,13 +30,7 @@ public class NetDao {
                 .execute(listener);
     }
 
-    public static void downloadGoodsDetail(Context context, int goodsId, OkHttpUtils.OnCompleteListener<GoodsDetailsBean> listener){
-        OkHttpUtils<GoodsDetailsBean> utils = new OkHttpUtils<>(context);
-        utils.setRequestUrl(I.REQUEST_FIND_GOOD_DETAILS)
-                .addParam(I.GoodsDetails.KEY_GOODS_ID,String.valueOf(goodsId))
-                .targetClass(GoodsDetailsBean.class)
-                .execute(listener);
-    }
+
 
     public static void downloadBuotique(Context context, OkHttpUtils.OnCompleteListener<BoutiqueBean[]> listener){
         OkHttpUtils<BoutiqueBean[]> utils = new OkHttpUtils<>(context);
@@ -185,6 +179,24 @@ public class NetDao {
         OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_DELETE_CART)
                 .addParam(I.Cart.ID,String.valueOf(cartId))
+                .targetClass(MessageBean.class)
+                .execute(listener);
+    }
+
+    public static void downloadGoodsDetall(Context context, int goodsId, OkHttpUtils.OnCompleteListener<GoodsDetailsBean> listener) {
+        OkHttpUtils<GoodsDetailsBean> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_FIND_GOOD_DETAILS)
+                .addParam(I.GoodsDetails.KEY_GOODS_ID,String.valueOf(goodsId))
+                .targetClass(GoodsDetailsBean.class)
+                .execute(listener);
+    }
+    public static void addCart(Context context,String username, int goodsId, OkHttpUtils.OnCompleteListener<MessageBean> listener){
+        OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_ADD_CART)
+                .addParam(I.Cart.USER_NAME,username)
+                .addParam(I.Cart.GOODS_ID,String.valueOf(goodsId))
+                .addParam(I.Cart.COUNT,String.valueOf(1))
+                .addParam(I.Cart.IS_CHECKED,String.valueOf(I.CART_CHECKED_DEFAULT))
                 .targetClass(MessageBean.class)
                 .execute(listener);
     }
