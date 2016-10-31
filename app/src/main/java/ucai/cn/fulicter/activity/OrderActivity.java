@@ -19,10 +19,12 @@ import ucai.cn.fulicter.bean.CartBean;
 import ucai.cn.fulicter.bean.User;
 import ucai.cn.fulicter.net.NetDao;
 import ucai.cn.fulicter.net.OkHttpUtils;
+import ucai.cn.fulicter.utils.CommonUtils;
 import ucai.cn.fulicter.utils.L;
 import ucai.cn.fulicter.utils.ResultUtils;
 import ucai.cn.fulicter.view.DisplayUtils;
 
+import static android.R.attr.data;
 
 
 public class OrderActivity extends BaseActivity {
@@ -155,4 +157,33 @@ public class OrderActivity extends BaseActivity {
     private void gotoStatements() {
         L.e(TAG,"rankPrice="+rankPrice);
     }
+    int resultCode = data.getExtras().getInt("code");
+    switch (resultCode){
+                       case 1:
+                           paySuccess();
+                                CommonUtils.showLongToast(R.string.pingpp_title_activity_pay_sucessed);
+                                break;
+                        case -1:
+                                CommonUtils.showLongToast(R.string.pingpp_pay_failed);
+                                finish();
+                                break;
+                    }
+            }
+    }
+
+            private void paySuccess() {
+                for (String id:ids){
+                    NetDao.deleteCart(mContext, Integer.valueOf(id), new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                        @Override
+                public void onSuccess(MessageBean result) {
+                            L.e(TAG,"result"+result);
+                        }
+        
+                        @Override
+                public void onError(String error) {
+
+                        }
+                    });
+        }
+                finish();
 }
